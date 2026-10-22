@@ -1,6 +1,6 @@
-package com.example.client;
+package com.example.user;
 
-import com.example.model.User;
+import com.example.user.User;
 
 import java.net.URI;
 import java.net.http.HttpClient;

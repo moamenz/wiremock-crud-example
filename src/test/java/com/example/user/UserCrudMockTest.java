@@ -1,7 +1,7 @@
-package com.example;
+package com.example.user;
 
-import com.example.client.UserApiClient;
-import com.example.stubs.UserStubs;
+import com.example.user.UserApiClient;
+import com.example.user.UserStubs;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;

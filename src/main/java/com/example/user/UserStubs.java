@@ -1,7 +1,7 @@
-package com.example.stubs;
+package com.example.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.model.User;
+import com.example.user.User;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;

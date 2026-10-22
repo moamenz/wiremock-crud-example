@@ -1,6 +1,6 @@
-package com.example;
+package com.example.user;
 
-import com.example.stubs.UserStubs;
+import com.example.user.UserStubs;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
@@ -9,7 +9,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
  *
  * Run with:
  *   mvn compile exec:java
- *   (or: mvn compile exec:java -Dexec.mainClass="com.example.MockServerMain")
+ *   (or: mvn compile exec:java -Dexec.mainClass="com.example.user.UserMockMain")
  *
  * Once running:
  *   - Mock endpoints:  http://localhost:8080/users ...
@@ -17,7 +17,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
  *
  * Stop with Ctrl+C.
  */
-public class MockServerMain {
+public class UserMockMain {
 
     public static void main(String[] args) {
         int port = 8080;

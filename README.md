@@ -8,7 +8,7 @@ Ready: clone, `./mvnw clean verify`, then run the server and curl it.
 ```
 git clone https://github.com/moamenz/wiremock-crud-example.git
 cd wiremock-crud-example
-./mvnw clean verify      # 8 JUnit tests, ~30s on first run (Maven Wrapper auto-downloads)
+./mvnw clean verify      # 13 JUnit tests, ~30s on first run (Maven Wrapper auto-downloads)
 
 # then run the server in a second terminal:
 ./mvnw compile exec:java -Dexec.mainClass=com.example.MockServerMain
@@ -36,6 +36,8 @@ live demo agree.
 | 4 | POST   | /users      | 201    | `{"id":1,"name":"Alice","email":"alice@example.com"}` + header `Location: /users/1` |
 | 5 | PUT    | /users/1    | 200    | `{"id":1,"name":"Alice Updated","email":"alice.new@example.com"}` |
 | 6 | DELETE | /users/1    | 204    | (empty body) |
+| 7 | POST   | /YakeenInformationInquiry11 (exact golden body) | 200   | success sample (StatusCode=I000000, Item.FamilyNameEn=ALBAHLAL, PassportList CX59263, ...) |
+| 8 | POST   | /YakeenInformationInquiry11 (anything else)    | 400   | {"ErrorResponse":{"Code":"BODY_MISMATCH","Message":"Request body does not match the expected sample."}} |
 
 ---
 
@@ -159,6 +161,43 @@ your domain.
    each stub is expressed in code, not a config file.
 
 ---
+
+## Running the YakeenInquiry Mock
+
+**Stub family 3 - single POST + strict body equality**
+
+A *single* POST /YakeenInformationInquiry11 endpoint that returns the real ETIMAD YakeenInquiry success sample
+**only when** the request body is byte-for-byte identical to the golden sample (in
+`YakeenInquiryStubs.java`), and `400 BODY_MISMATCH` for anything else. Priority 1 (strict match)
+wins; priority 10 (fallback) catches everything else.
+
+Files:
+
+| File | Role |
+|------|------|
+| `src/main/java/com/example/yakeen/YakeenInquiryStubs.java` | JSON constants (golden body + success payload + mismatch error) + 2 stubs (`postExact` priority 1, `postFallback` priority 10) + `registerAll(WireMockServer)` |
+| `src/main/java/com/example/yakeen/YakeenInquiryApiClient.java` | Thin `java.net.http.HttpClient` wrapper with `postInquiry(String jsonBody)` - no OkHttp, no Spring |
+| `src/main/java/com/example/yakeen/YakeenInquiryMockMain.java` | Standalone server entry point - default port **8081** (runs alongside `users` on 8080 + `financialclaim` on 8082) |
+| `src/test/java/com/example/yakeen/YakeenInquiryMockTest.java` | 2 JUnit 5 tests: `exactBody_returns200WithSuccessPayload` + `differentPartyId_returns400BodyMismatch` |
+
+> **To run**: `./mvnw compile exec:java -Dexec.mainClass=com.example.yakeen.YakeenInquiryMockMain` (port 8081).
+> **To test**: `./mvnw test -Dtest=YakeenInquiryMockTest` OR full suite: `./mvnw -B clean verify` (all 13 tests).
+
+### Quick curl
+
+**Success** (matches the golden body in `YakeenInquiryStubs.java`):
+
+```
+curl -s -X POST http://localhost:8081/YakeenInformationInquiry11
+  -H 'Content-Type: application/json'
+  -d '{"Request":...}' 
+```
+
+Returns `200` + the real ETIMAD `YakeenInquiry` success sample (see `YakeenInquiryStubs.SUCCESS_PAYLOAD` for the full JSON).
+
+**Failure** (any other body): `400` + `BODY_MISMATCH` envelope - see `YakeenInquiryStubs.MISMATCH_ERROR`.
+
+**Full run instructions** are also described in the in-package Javadoc of each class.
 
 ## Project Layout
 

@@ -62,8 +62,12 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.2.0</version>
+                <!-- <configuration>
+                     (intentionally empty so -Dexec.mainClass=... wins for any in-repo mock;
+                     the original default was <mainClass>com.example.MockServerMain</mainClass>)
+                -->
                 <configuration>
-                    <mainClass>com.example.MockServerMain</mainClass>
+                    <!-- <mainClass>com.example.MockServerMain</mainClass> removed so -Dexec.mainClass wins -->
                 </configuration>
             </plugin>
         </plugins>
